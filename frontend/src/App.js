@@ -1,22 +1,14 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import '@/App.css';
-import { BrowserRouter, Routes, Route, useLocation, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
 import AnalysisDashboard from './components/AnalysisDashboard';
 import SimulationStage from './components/SimulationStage';
 import ProofOfSkill from './components/ProofOfSkill';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import Profile from './pages/Profile';
-import LearningResources from './pages/LearningResources';
-import JobBoard from './pages/JobBoard';
-import ProgressTracker from './pages/ProgressTracker';
-import Mentorship from './pages/Mentorship';
-import Community from './pages/Community';
-import Settings from './pages/Settings';
+import MainDashboard from './pages/MainDashboard';
 import AuthCallback from './components/AuthCallback';
 import ProtectedRoute from './components/ProtectedRoute';
-import Navbar from './components/Navbar';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AuthContext = createContext();
@@ -34,15 +26,7 @@ function AppRouter() {
     <Routes>
       <Route path="/" element={<LandingHome />} />
       <Route path="/login" element={<Login />} />
-      
-      <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-      <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-      <Route path="/resources" element={<ProtectedRoute><LearningResources /></ProtectedRoute>} />
-      <Route path="/jobs" element={<ProtectedRoute><JobBoard /></ProtectedRoute>} />
-      <Route path="/progress" element={<ProtectedRoute><ProgressTracker /></ProtectedRoute>} />
-      <Route path="/mentorship" element={<ProtectedRoute><Mentorship /></ProtectedRoute>} />
-      <Route path="/community" element={<ProtectedRoute><Community /></ProtectedRoute>} />
-      <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+      <Route path="/dashboard" element={<ProtectedRoute><MainDashboard /></ProtectedRoute>} />
     </Routes>
   );
 }
