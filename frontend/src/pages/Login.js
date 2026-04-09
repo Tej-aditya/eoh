@@ -22,18 +22,20 @@ const Login = () => {
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(body)
       });
 
+      const data = await response.json();
+
       if (response.ok) {
-        // Successful login/register - go to home page
+        localStorage.setItem('access_token', data.access_token);
+        localStorage.setItem('refresh_token', data.refresh_token);
         window.location.href = '/';
       } else {
-        const data = await response.json();
         setError(data.detail || 'Authentication failed');
       }
     } catch (err) {
+      console.error('Auth error:', err);
       setError('Network error. Please try again.');
     } finally {
       setLoading(false);
@@ -76,7 +78,7 @@ const Login = () => {
           transition={{ delay: 0.2 }}
           className="glass-panel rounded-3xl p-8"
         >
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6" data-testid="auth-form">
             {isRegister && (
               <div>
                 <label className="block text-sm font-semibold mb-2 text-white">Name</label>
@@ -88,6 +90,7 @@ const Login = () => {
                     onChange={(e) => setName(e.target.value)}
                     required={isRegister}
                     placeholder="Your name"
+                    data-testid="register-name-input"
                     className="w-full bg-black/50 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-[#00f2fe] focus:ring-1 focus:ring-[#00f2fe] transition-all"
                   />
                 </div>
@@ -104,6 +107,7 @@ const Login = () => {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="your@email.com"
+                  data-testid="auth-email-input"
                   className="w-full bg-black/50 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-[#00f2fe] focus:ring-1 focus:ring-[#00f2fe] transition-all"
                 />
               </div>
@@ -119,13 +123,14 @@ const Login = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   placeholder="••••••••"
+                  data-testid="auth-password-input"
                   className="w-full bg-black/50 border border-white/10 rounded-xl pl-12 pr-4 py-3 text-white focus:outline-none focus:border-[#00f2fe] focus:ring-1 focus:ring-[#00f2fe] transition-all"
                 />
               </div>
             </div>
 
             {error && (
-              <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20">
+              <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20" data-testid="auth-error-message">
                 <p className="text-sm text-red-500">{error}</p>
               </div>
             )}
@@ -133,6 +138,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
+              data-testid="auth-submit-button"
               className="w-full bg-gradient-to-r from-[#00f2fe] to-[#4facfe] text-black font-semibold rounded-full px-8 py-4 hover:shadow-[0_0_20px_rgba(0,242,254,0.4)] transition-all duration-300 transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
             >
               {loading ? (
@@ -155,6 +161,7 @@ const Login = () => {
                 setIsRegister(!isRegister);
                 setError('');
               }}
+              data-testid="auth-toggle-mode"
               className="text-sm text-[#00f2fe] hover:text-white transition-colors"
             >
               {isRegister ? 'Already have an account? Sign in' : "Don't have an account? Create one"}
@@ -163,8 +170,8 @@ const Login = () => {
 
           {!isRegister && (
             <div className="mt-4 p-4 bg-[#00f2fe]/10 border border-[#00f2fe]/20 rounded-xl">
-              <p className="text-xs text-[#00f2fe] text-center">
-                💡 Demo Account: admin@skillsync.ai / Admin@123
+              <p className="text-xs text-[#00f2fe] text-center" data-testid="demo-credentials-hint">
+                Demo Account: admin@skillsync.ai / Admin@123
               </p>
             </div>
           )}
@@ -188,8 +195,9 @@ const Login = () => {
           <a
             href="/"
             className="text-sm text-[#A1A1AA] hover:text-white transition-colors"
+            data-testid="back-to-home-link"
           >
-            ← Back to Home
+            Back to Home
           </a>
         </motion.div>
       </motion.div>

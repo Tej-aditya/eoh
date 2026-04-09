@@ -11,6 +11,11 @@ import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
+const getAuthHeaders = () => {
+  const token = localStorage.getItem('access_token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+};
+
 const MainDashboard = () => {
   const { user, setUser, logout } = useAuth();
   const [activeSection, setActiveSection] = useState('overview');
@@ -34,7 +39,7 @@ const MainDashboard = () => {
   const loadDashboardData = async () => {
     try {
       const response = await axios.get(`${BACKEND_URL}/api/dashboard/stats`, {
-        withCredentials: true
+        headers: getAuthHeaders()
       });
       setStats(response.data);
     } catch (error) {
@@ -49,7 +54,7 @@ const MainDashboard = () => {
       const response = await axios.put(
         `${BACKEND_URL}/api/profile`,
         formData,
-        { withCredentials: true }
+        { headers: getAuthHeaders() }
       );
       setUser(response.data);
       setIsEditing(false);

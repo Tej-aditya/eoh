@@ -70,11 +70,10 @@ def create_refresh_token(user_id: str) -> str:
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
 async def get_current_user_auth(request: Request) -> dict:
-    token = request.cookies.get("access_token")
-    if not token:
-        auth_header = request.headers.get("Authorization", "")
-        if auth_header.startswith("Bearer "):
-            token = auth_header[7:]
+    token = None
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        token = auth_header[7:]
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
     try:
@@ -84,9 +83,16 @@ async def get_current_user_auth(request: Request) -> dict:
         user = await db.users.find_one({"_id": ObjectId(payload["sub"])})
         if not user:
             raise HTTPException(status_code=401, detail="User not found")
-        user["_id"] = str(user["_id"])
-        user.pop("password_hash", None)
-        return user
+        return {
+            "user_id": str(user["_id"]),
+            "email": user["email"],
+            "name": user.get("name", ""),
+            "picture": user.get("picture"),
+            "bio": user.get("bio"),
+            "career_goal": user.get("career_goal"),
+            "location": user.get("location"),
+            "experience_years": user.get("experience_years")
+        }
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=401, detail="Token expired")
     except jwt.InvalidTokenError:
@@ -235,39 +241,39 @@ class JobUrlRequest(BaseModel):
 # ==================== AUTH HELPER ====================
 
 async def get_current_user(request: Request) -> User:
-    """Get current user from session token (cookie or header)"""
-    session_token = request.cookies.get("session_token")
+    """Get current user from JWT Bearer token"""
+    token = None
+    auth_header = request.headers.get("Authorization", "")
+    if auth_header.startswith("Bearer "):
+        token = auth_header[7:]
     
-    if not session_token:
-        auth_header = request.headers.get("Authorization", "")
-        if auth_header.startswith("Bearer "):
-            session_token = auth_header.replace("Bearer ", "")
-    
-    if not session_token:
+    if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
     
-    session_doc = await db.user_sessions.find_one({"session_token": session_token}, {"_id": 0})
-    if not session_doc:
-        raise HTTPException(status_code=401, detail="Invalid session")
-    
-    expires_at = session_doc["expires_at"]
-    if isinstance(expires_at, str):
-        expires_at = datetime.fromisoformat(expires_at)
-    if expires_at.tzinfo is None:
-        expires_at = expires_at.replace(tzinfo=timezone.utc)
-    
-    if expires_at < datetime.now(timezone.utc):
-        await db.user_sessions.delete_one({"session_token": session_token})
-        raise HTTPException(status_code=401, detail="Session expired")
-    
-    user_doc = await db.users.find_one({"user_id": session_doc["user_id"]}, {"_id": 0})
-    if not user_doc:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    if isinstance(user_doc.get("created_at"), str):
-        user_doc["created_at"] = datetime.fromisoformat(user_doc["created_at"])
-    
-    return User(**user_doc)
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        if payload.get("type") != "access":
+            raise HTTPException(status_code=401, detail="Invalid token type")
+        user_doc = await db.users.find_one({"_id": ObjectId(payload["sub"])})
+        if not user_doc:
+            raise HTTPException(status_code=401, detail="User not found")
+        
+        user_id = str(user_doc["_id"])
+        return User(
+            user_id=user_id,
+            email=user_doc["email"],
+            name=user_doc.get("name", ""),
+            picture=user_doc.get("picture"),
+            bio=user_doc.get("bio"),
+            career_goal=user_doc.get("career_goal"),
+            location=user_doc.get("location"),
+            experience_years=user_doc.get("experience_years"),
+            created_at=user_doc.get("created_at", datetime.now(timezone.utc))
+        )
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
 
 async def get_optional_user(request: Request) -> Optional[User]:
     """Get user if authenticated, None otherwise"""
@@ -404,7 +410,7 @@ class RegisterRequest(BaseModel):
     name: str
 
 @api_router.post("/auth/register")
-async def register(request: RegisterRequest, response: Response):
+async def register(request: RegisterRequest):
     """Register a new user"""
     try:
         email = request.email.lower()
@@ -431,17 +437,21 @@ async def register(request: RegisterRequest, response: Response):
         access_token = create_access_token(user_id, email)
         refresh_token = create_refresh_token(user_id)
         
-        # Set cookies
-        response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="none", max_age=900, path="/")
-        response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=True, samesite="none", max_age=604800, path="/")
-        
-        return {"_id": user_id, "email": email, "name": request.name}
+        return {
+            "user_id": user_id,
+            "email": email,
+            "name": request.name,
+            "access_token": access_token,
+            "refresh_token": refresh_token
+        }
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Registration error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @api_router.post("/auth/login")
-async def login(request: LoginRequest, response: Response):
+async def login(request: LoginRequest):
     """Login user"""
     try:
         email = request.email.lower()
@@ -461,11 +471,13 @@ async def login(request: LoginRequest, response: Response):
         access_token = create_access_token(user_id, email)
         refresh_token = create_refresh_token(user_id)
         
-        # Set cookies
-        response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="none", max_age=900, path="/")
-        response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=True, samesite="none", max_age=604800, path="/")
-        
-        return {"_id": user_id, "email": email, "name": user.get("name", "")}
+        return {
+            "user_id": user_id,
+            "email": email,
+            "name": user.get("name", ""),
+            "access_token": access_token,
+            "refresh_token": refresh_token
+        }
     except HTTPException:
         raise
     except Exception as e:
@@ -479,10 +491,8 @@ async def get_me(request: Request):
     return user
 
 @api_router.post("/auth/logout")
-async def logout(response: Response):
-    """Logout user"""
-    response.delete_cookie("access_token", path="/")
-    response.delete_cookie("refresh_token", path="/")
+async def logout():
+    """Logout user - client should discard tokens"""
     return {"message": "Logged out"}
 
 # ==================== ANALYSIS ROUTES ====================
@@ -780,7 +790,7 @@ app.include_router(api_router)
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
-    allow_origins=os.environ.get('CORS_ORIGINS', '*').split(','),
+    allow_origins=[os.environ.get('FRONTEND_URL', 'http://localhost:3000')],
     allow_methods=["*"],
     allow_headers=["*"],
 )

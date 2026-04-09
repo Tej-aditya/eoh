@@ -258,12 +258,20 @@ function App() {
 
   const checkAuth = async () => {
     try {
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        setLoading(false);
+        return;
+      }
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/me`, {
-        credentials: 'include'
+        headers: { 'Authorization': `Bearer ${token}` }
       });
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
+      } else {
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
       }
     } catch (error) {
       console.log('Not authenticated');
@@ -274,14 +282,18 @@ function App() {
 
   const logout = async () => {
     try {
+      const token = localStorage.getItem('access_token');
       await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/auth/logout`, {
         method: 'POST',
-        credentials: 'include'
+        headers: { 'Authorization': `Bearer ${token}` }
       });
-      setUser(null);
-      window.location.href = '/';
     } catch (error) {
       console.error('Logout failed:', error);
+    } finally {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      setUser(null);
+      window.location.href = '/';
     }
   };
 
