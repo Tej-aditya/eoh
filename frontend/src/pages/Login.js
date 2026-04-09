@@ -25,18 +25,22 @@ const Login = () => {
         body: JSON.stringify(body)
       });
 
-      const data = await response.json();
-
       if (response.ok) {
+        const data = await response.json();
         localStorage.setItem('access_token', data.access_token);
         localStorage.setItem('refresh_token', data.refresh_token);
         window.location.href = '/';
       } else {
-        setError(data.detail || 'Authentication failed');
+        let errorMsg = 'Authentication failed';
+        try {
+          const data = await response.json();
+          errorMsg = data.detail || errorMsg;
+        } catch {}
+        setError(errorMsg);
       }
     } catch (err) {
       console.error('Auth error:', err);
-      setError('Network error. Please try again.');
+      setError('Connection error. Please check your internet and try again.');
     } finally {
       setLoading(false);
     }

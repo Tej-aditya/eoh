@@ -462,7 +462,7 @@ async def login(request: LoginRequest):
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
         # Verify password
-        if not verify_password(request.password, user["password_hash"]):
+        if not user.get("password_hash") or not verify_password(request.password, user["password_hash"]):
             raise HTTPException(status_code=401, detail="Invalid credentials")
         
         user_id = str(user["_id"])
