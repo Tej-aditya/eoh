@@ -1,0 +1,109 @@
+{
+  "project_name": "SkillSync AI",
+  "theme": "dark",
+  "archetype": "Electric & Neon (7) customized with Crystal Glassmorphism (High-End Apple Style)",
+  "colors": {
+    "background": "#050505",
+    "background_gradient": "radial-gradient(circle at 50% 0%, #0a192f 0%, #050505 70%)",
+    "surface": "rgba(255, 255, 255, 0.03)",
+    "surface_hover": "rgba(255, 255, 255, 0.08)",
+    "border": "rgba(255, 255, 255, 0.1)",
+    "primary": "#00f2fe",
+    "secondary": "#4facfe",
+    "primary_gradient": "linear-gradient(135deg, #00f2fe, #4facfe)",
+    "text_primary": "#FFFFFF",
+    "text_secondary": "#A1A1AA",
+    "success": "#10B981",
+    "warning": "#F59E0B",
+    "danger": "#EF4444"
+  },
+  "typography": {
+    "font_strategy": "The 'Swiss Brutalist' adapted for Developer Tech.",
+    "headings": {
+      "family": "Outfit, sans-serif",
+      "weights": ["300", "500", "700"],
+      "tracking": "tracking-tight",
+      "rules": "H1 up to text-5xl sm:text-6xl. DO NOT center-align unless explicit hero section. Never use Inter for headings."
+    },
+    "body": {
+      "family": "Satoshi, sans-serif",
+      "weights": ["400", "500"],
+      "tracking": "tracking-normal",
+      "rules": "High readability, loose line-height (leading-relaxed)."
+    },
+    "mono": {
+      "family": "JetBrains Mono, monospace",
+      "weights": ["400", "600"],
+      "tracking": "tracking-tight",
+      "rules": "Use for Code Editor, Readiness Scores, Badges, and Terminal elements."
+    }
+  },
+  "layout_and_spacing": {
+    "philosophy": "Generous Spacing (p-8, p-12) for landing/marketing flows; 'Control Room' Bento Grid for the AI Gap Engine Dashboard.",
+    "container_padding": "p-6 md:p-12",
+    "grid_gap": "gap-6 md:gap-8",
+    "radius": "rounded-2xl md:rounded-3xl",
+    "alignment": "Mobile-First. Grid items must be direct children. Avoid centered standard blocks; use asymmetry and overlapping glass panels."
+  },
+  "surface_styles": {
+    "glass_panel": "backdrop-blur-2xl bg-white/5 border border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.5)]",
+    "glass_panel_active": "backdrop-blur-2xl bg-white/10 border border-[#00f2fe]/50 shadow-[0_8px_32px_rgba(0,242,254,0.15)]",
+    "tracing_beam_card": "relative overflow-hidden border border-white/10 bg-black/40 backdrop-blur-md group hover:border-[#00f2fe]/50 transition-colors duration-500",
+    "rules": "Never use transparent backgrounds without blur. Crystal glass must feel like milled crystal - smooth, premium, with 1px delicate inner stroke."
+  },
+  "components": {
+    "buttons": "bg-gradient-to-r from-[#00f2fe] to-[#4facfe] text-black font-semibold rounded-full px-8 py-4 hover:shadow-[0_0_20px_rgba(0,242,254,0.4)] transition-all duration-300 transform hover:-translate-y-1 hover:text-black",
+    "secondary_buttons": "bg-white/5 border border-white/10 text-white rounded-full px-6 py-3 hover:bg-white/10 transition-colors backdrop-blur-md",
+    "inputs": "bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-[#00f2fe] focus:ring-1 focus:ring-[#00f2fe] transition-all backdrop-blur-md",
+    "skill_badge": "px-3 py-1 rounded-full text-xs font-mono bg-[#00f2fe]/10 text-[#00f2fe] border border-[#00f2fe]/20 uppercase tracking-[0.1em]",
+    "score_visualizer": "Recharts radial bar with cyan to blue gradient. Add glow effect using drop-shadow SVG filter. Center text uses JetBrains Mono."
+  },
+  "animations": {
+    "library": "framer-motion",
+    "page_transition": {
+      "initial": { "opacity": 0, "y": 20 },
+      "animate": { "opacity": 1, "y": 0 },
+      "transition": { "duration": 0.5, "ease": [0.22, 1, 0.36, 1] }
+    },
+    "hover_lift": "hover:-translate-y-1 transition-transform duration-300",
+    "card_tilt": "Use Framer Motion 'useMotionValue' and 'useTransform' to create a 3D tilt effect on mouse move for the Proof-of-Skill card."
+  },
+  "media": {
+    "hero_background": {
+      "url": "https://images.unsplash.com/photo-1741767123174-a76960011e6c?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NTYxODF8MHwxfHNlYXJjaHwxfHxuZW9uJTIwZGFyayUyMGFic3RyYWN0fGVufDB8fHx8MTc3NTcyMzE4OXww&ixlib=rb-4.1.0&q=85",
+      "description": "Dark ceiling texture. Apply a subtle mix-blend-mode or grayscale + cyan tint overlay to match the neon theme. Use as a deeply blurred atmospheric background."
+    },
+    "code_simulation_bg": {
+      "url": "https://images.unsplash.com/photo-1738255654134-1877cb984a8f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NDh8MHwxfHNlYXJjaHwyfHxsYXB0b3AlMjBjb2RlJTIwZGFya3xlbnwwfHx8fDE3NzU3MjMxODl8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Dark mode code editor screen. Use as a subtle opacity pattern behind the simulation task layout."
+    },
+    "sponsor_logo": {
+      "url": "https://images.unsplash.com/photo-1599305445671-ac291c95aaa9?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjAzMjd8MHwxfHNlYXJjaHwxfHxjb21wYW55JTIwbG9nb3xlbnwwfHx8fDE3NzU3MjMxODl8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Example company logo representing the Job Description target company (simulate a Mercedes hiring profile)."
+    },
+    "resume_visual": {
+      "url": "https://images.unsplash.com/photo-1698047681432-006d2449c631?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjY2NzZ8MHwxfHNlYXJjaHwxfHxyZXN1bWV8ZW58MHx8fHwxNzc1NzIzMTg5fDA&ixlib=rb-4.1.0&q=85",
+      "description": "Resume reference image to use in onboarding/upload instructions if necessary."
+    }
+  },
+  "pages_and_flows": {
+    "landing_upload_stage": "Centered crystal glass panel taking 60% width on desktop. Two main inputs: Resume drag-and-drop zone + Job Description URL field. A glowing CTA 'Analyze Gap'. Background features subtle animated cyan neon blobs behind the glass.",
+    "analysis_dashboard": "Bento Grid (Control Room Mode) using 'gap-6'. Top left (col-span-1): 3D Radial Readiness Score glowing in neon cyan. Top right (col-span-2): Job Role Meta Data & Match breakdown. Bottom full width: 3 Missing Industry Skills displayed as horizontal glass cards with glowing 'Start Simulation' CTAs.",
+    "simulation_stage": "Split screen layout. Left (glass panel): The Missing Skill brief and logic instructions. Right: @monaco-editor/react component or custom Logic Puzzle UI. Minimalist header. Use `framer-motion` for smooth layout ID transitions.",
+    "proof_of_skill": "A final celebratory screen. A 3D interactive 'NFT-style' Proof-of-Skill card. Contains the user's name, the skill verified, the readiness score, and a 'Verified by AI' hologram badge. Features canvas-confetti on entry and shareable social buttons below."
+  },
+  "technical_rules": {
+    "html_elements": "Use Shadcn customized components. DO NOT use native HTML <select>, <input type='date'>. Use raw HTML + Tailwind for structural layouts rather than Shadcn's Card, to achieve overlapping and bento grid asymmetry.",
+    "testing": "All interactive elements MUST have data-testid attributes (e.g., `data-testid='resume-upload-zone'`).",
+    "accessibility": "Ensure text contrast over glass panels. Use 1px inner borders (`border-white/10`) on glass cards to define edges. Must respect prefers-reduced-motion for framer animations."
+  },
+  "instructions_to_main_agent": [
+    "Install the required libraries immediately: framer-motion, lucide-react, recharts, react-dropzone, @monaco-editor/react, canvas-confetti, clsx, tailwind-merge.",
+    "Build the application as a Single-Page Application (SPA) with smooth step-by-step state transitions.",
+    "Do NOT use placeholder text or dummy image URLs. ONLY use the media URLs provided in this JSON.",
+    "Apply the crystal glass surface style explicitly on major containers, avoiding flat gray/black backgrounds.",
+    "Use JetBrains Mono for all code-related typography, scores, and technical tags.",
+    "Ensure all buttons and links have hover states with increased text contrast or neon glow.",
+    "Prioritize optical alignment and generous padding (p-8 to p-12) to match the high-end Apple-style aesthetic."
+  ]
+}
