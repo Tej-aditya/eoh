@@ -33,13 +33,12 @@ function AppRouter() {
 
 function LandingHome() {
   const { user } = useAuth();
-  const navigate = useNavigate();
   
   useEffect(() => {
     if (user) {
-      navigate('/dashboard');
+      window.location.href = '/dashboard';
     }
-  }, [user, navigate]);
+  }, [user]);
   
   const [stage, setStage] = useState('landing');
   const [analysisData, setAnalysisData] = useState(null);
