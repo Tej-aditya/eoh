@@ -27,7 +27,8 @@ const Login = () => {
       });
 
       if (response.ok) {
-        window.location.href = '/dashboard';
+        // Successful login/register - go to home page
+        window.location.href = '/';
       } else {
         const data = await response.json();
         setError(data.detail || 'Authentication failed');
