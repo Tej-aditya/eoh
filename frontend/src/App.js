@@ -297,7 +297,6 @@ function App() {
     <AuthContext.Provider value={{ user, setUser, logout, checkAuth }}>
       <div className="App">
         <BrowserRouter>
-          {user && <Navbar />}
           <AppRouter />
         </BrowserRouter>
       </div>
