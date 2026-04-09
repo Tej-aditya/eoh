@@ -432,8 +432,8 @@ async def register(request: RegisterRequest, response: Response):
         refresh_token = create_refresh_token(user_id)
         
         # Set cookies
-        response.set_cookie(key="access_token", value=access_token, httponly=True, secure=False, samesite="lax", max_age=900, path="/")
-        response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=False, samesite="lax", max_age=604800, path="/")
+        response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="none", max_age=900, path="/")
+        response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=True, samesite="none", max_age=604800, path="/")
         
         return {"_id": user_id, "email": email, "name": request.name}
     except Exception as e:
@@ -462,8 +462,8 @@ async def login(request: LoginRequest, response: Response):
         refresh_token = create_refresh_token(user_id)
         
         # Set cookies
-        response.set_cookie(key="access_token", value=access_token, httponly=True, secure=False, samesite="lax", max_age=900, path="/")
-        response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=False, samesite="lax", max_age=604800, path="/")
+        response.set_cookie(key="access_token", value=access_token, httponly=True, secure=True, samesite="none", max_age=900, path="/")
+        response.set_cookie(key="refresh_token", value=refresh_token, httponly=True, secure=True, samesite="none", max_age=604800, path="/")
         
         return {"_id": user_id, "email": email, "name": user.get("name", "")}
     except HTTPException:
